@@ -1,0 +1,171 @@
+    1  sudo passwd root
+    2  passwd
+    3  su
+    4  passwd
+    5  su
+    6  git init
+    7  ls
+    8  cd '/home/vboxuser/Desktop/OS' 
+    9  ls
+   10  nano ex0
+   11  whoami
+   12  nano namelist
+   13  ls
+   14  cat namelist
+   15  sort -n -r namelist > namelist.sorted
+   16  ls
+   17  cat namelist
+   18  cat namelist.sorted 
+   19  stdin
+   20  find /proc/ -name "*task*"
+   21  find /proc/ -name "*task*" 1> output.txt
+   22  ls
+   23  cat output.txt 
+   24  cat output.txt errors
+   25  ls
+   26  rm output.txt 
+   27  ls
+   28  cd ..
+   29  ls
+   30  cd ..
+   31  ls
+   32  cd ~
+   33  ls
+   34  cd home
+   35  su
+   36  git init
+   37  apt install git
+   38  su
+   39  cd EgorMeganov_OS/
+   40  ls
+   41  cd week01
+   42  ls
+   43  nano ex1.sh
+   44  sh ex1.sh
+   45  nano ex1.sh
+   46  sh ex1.sh
+   47  ls
+   48  sh ex1.sh
+   49  cat ex1.
+   50  cat ex1.sh
+   51  cd /home/
+   52  ls
+   53  cd vboxuser
+   54  ls
+   55  cd EgorMeganov_OS/
+   56  ls
+   57  git add.
+   58  git add
+   59  git add .
+   60  git commit
+   61  git push
+   62  git update
+   63  git pull
+   64  git fetch
+   65  git pull
+   66  git merge -h
+   67  git merge --abort
+   68  git status
+   69  git branch
+   70  git merge
+   71  git
+   72  git clone [200~https://github.com/RwKaLs/EgorMeganov_OS
+   73  git clone https://github.com/RwKaLs/EgorMeganov_OS/tree/main
+   74  ls
+   75  git clone https://github.com/RwKaLs/EgorMeganov_OS/
+   76  git clone https://github.com/RwKaLs/EgorMeganov_OS.git
+   77  ssh-keygen -t ed25519 -C "e.meganov@innopolis.university"
+   78  ls
+   79  cd !
+   80  cd ~
+   81  ls
+   82  cd /home/vboxuser/.ssh/id_ed25519.pub
+   83  cd /home/vboxuser/.ssh/
+   84  ls
+   85  ssh-add id_ed25519
+   86  ls
+   87  cat id_ed25519.pub 
+   88  ls
+   89  cd ~
+   90  ls
+   91  cd EgorMeganov_OS/
+   92  ls
+   93  git clone git@github.com:RwKaLs/EgorMeganov_OS.git
+   94  ls
+   95  cd EgorMeganov_OS/
+   96  ls
+   97  cd home
+   98  cd ~
+   99  cd .
+  100  cd ..
+  101  ls
+  102  cd ~
+  103  ls
+  104  rm EgorMeganov_OS/
+  105  rm -rf EgorMeganov_OS/
+  106  ls
+  107  git clone git@github.com:RwKaLs/EgorMeganov_OS.git
+  108  ls
+  109  cd EgorMeganov_OS/
+  110  ls
+  111  nano test
+  112  ls
+  113  git commit -m
+  114  git commit
+  115  git add test
+  116  ls
+  117  git commit
+  118  ls
+  119  git push
+  120  rm test
+  121  ls
+  122  git add
+  123  git commit
+  124  git add
+  125  git add .
+  126  ls
+  127  git commit
+  128  git push
+  129  ls
+  130  mkdir week01
+  131  ls
+  132  rm -rf week01/
+  133  ls
+  134  cd ~
+  135  ls
+  136  mkdir ~/week01
+  137  ls
+  138  cd week01
+  139  ls --help
+  140  ls /usr/bin/ | grep "gcc" | tail -n 5 | sort -r
+  141  ls /usr/bin/ | grep "gcc" | sort -r | tail -n 5
+  142  grep
+  143  ls /usr/bin/ | grep "gcc"
+  144  apt install gcc
+  145  su
+  146  find "gcc"
+  147  ls
+  148  cd ~
+  149  ls
+  150  cd EgorMeganov_OS/
+  151  ls
+  152  mkdir week01
+  153  ls
+  154  cd week01
+  155  ls /usr/bin/ | grep "gcc" | tail -n 5 | sort -r
+  156  nano ex1.txt
+  157  ls
+  158  cat ex1.txt 
+  159  "ls /usr/bin/ | grep "gcc" | tail -n 5 | sort -r" > ex1.sh
+  160  ls
+  161  nano ex1.sh
+  162  ./ex1.sh
+  163  sh ex1.sh
+  164  cat ex1.sh
+  165  history
+  166  ls
+  167  cd EgorMeganov_OS/
+  168  ls
+  169  cd week01
+  170  ls
+  171  history > ex2.txt
