@@ -8,7 +8,7 @@ int tribonacci(int n) {
         return 1;
     }
     int current;
-    for (int i = 3; i < n; ++i) {
+    for (int i = 3; i <= n; ++i) {
         current = first + second + third;
         first = second;
         second = third;
