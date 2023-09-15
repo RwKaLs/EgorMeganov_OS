@@ -17,7 +17,7 @@ void convert(long long number, int sBase, int tBase) {
         n *= sBase;
         number /= 10;
     }
-    char res[100];
+    char res[256];
     int index = 0;
     while (dec > 0) {
         int rem = (int) dec % tBase;
@@ -35,7 +35,7 @@ void convert(long long number, int sBase, int tBase) {
 }
 
 int main() {
-    char input[200];
+    char input[256];
     long long number;
     int sBase, tBase;
     printf("Number: ");

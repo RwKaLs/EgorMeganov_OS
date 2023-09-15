@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    char s[200];
+    char s[256];
     char temp;
     int len = 0;
     while (1) {
