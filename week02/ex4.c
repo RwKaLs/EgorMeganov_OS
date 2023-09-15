@@ -15,7 +15,7 @@ int count(const char *s, char symbol) {
 
 void countAll(const char *s) {
     int len = strlen(s);
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < len - 1; ++i) {
         char currentChar = s[i];
         if (isalpha(currentChar)) {
             int charCount = count(s, currentChar);
@@ -26,6 +26,7 @@ void countAll(const char *s) {
             --i;
         }
     }
+    printf("%c:%d", tolower(s[len-1]), count(s, tolower(s[len-1])));
     printf("\n");
 }
 
@@ -35,3 +36,4 @@ int main() {
     countAll(input);
     return 0;
 }
+
