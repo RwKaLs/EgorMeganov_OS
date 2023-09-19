@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-int count(const char *s, char symbol) {
+int count(char s[], char symbol) {
     int count = 0;
     int len = strlen(s);
     for (int i = 0; i < len; ++i) {
@@ -13,7 +13,7 @@ int count(const char *s, char symbol) {
     return count;
 }
 
-void countAll(const char *s) {
+void countAll(char s[]) {
     int len = strlen(s);
     for (int i = 0; i < len - 1; ++i) {
         char currentChar = s[i];
@@ -36,4 +36,3 @@ int main() {
     countAll(input);
     return 0;
 }
-
