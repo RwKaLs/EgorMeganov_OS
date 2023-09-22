@@ -3,8 +3,6 @@
 #include <limits.h>
 #include <float.h>
 
-// We cannot use type conversion int -> double
-// because of the different size we'll obtain 0 after conversion
 void* add(const void* a, const void* b, size_t size) {
     if (size == sizeof(int)) {
         int sum = *(int*)a + *(int*)b;
