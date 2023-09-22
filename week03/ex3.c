@@ -4,8 +4,8 @@
 #define MAX_NAME 63
 #define MAX_PATH 2048
 #define MAX_DATA 1024
-#define MAX_FILES 100
-#define MAX_DIRS 100
+#define MAX_FILES 256
+#define MAX_DIRS 256
 
 typedef struct File {
     int id;
