@@ -3,53 +3,45 @@
 #include <limits.h>
 #include <float.h>
 
-void* add(const void* a, const void* b, size_t size) {
-    if (size == sizeof(int)) {
-        int sum = *(int*)a + *(int*)b;
-        int* p = malloc(sizeof(int));
-        *p = sum;
-        return p;
-    } else {
+void* add(const void* a, const void* b) {
+    if (a && b) {
         double sum = *(double*)a + *(double*)b;
         double* p = malloc(sizeof(double));
         *p = sum;
         return p;
     }
+    return NULL;
 }
 
-void* multiply(const void* a, const void* b, size_t size) {
-    if (size == sizeof(int)) {
-        int product = *(int*)a * *(int*)b;
-        int* p = malloc(sizeof(int));
-        *p = product;
-        return p;
-    } else {
-        double product = *(double*)a * *(double*)b;
-        double* p = malloc(sizeof(double));
-        *p = product;
-        return p;
-    }
+void* multiply_int(const void* a, const void* b) {
+    int product = *(int*)a * *(int*)b;
+    int* p = malloc(sizeof(int));
+    *p = product;
+    return p;
 }
 
-void* max(const void* a, const void* b, size_t size) {
-    if (size == sizeof(int)) {
-        int maximum = (*(int*)a > *(int*)b) ? *(int*)a : *(int*)b;
-        int* p = malloc(sizeof(int));
-        *p = maximum;
-        return p;
-    } else {
+void* multiply_double(const void* a, const void* b) {
+    double product = *(double*)a * *(double*)b;
+    double* p = malloc(sizeof(double));
+    *p = product;
+    return p;
+}
+
+void* max(const void* a, const void* b) {
+    if (a && b) {
         double maximum = (*(double*)a > *(double*)b) ? *(double*)a : *(double*)b;
         double* p = malloc(sizeof(double));
         *p = maximum;
         return p;
     }
+    return NULL;
 }
 
-void* aggregate(void* base, size_t size, int n, void* initial_value, void* (*opr)(const void*, const void*, size_t)) {
+void* aggregate(void* base, size_t size, int n, void* initial_value, void* (*opr)(const void*, const void*)) {
     void* ptr = base;
     void* result;
     for(int i = 0; i < n; i++) {
-        result = opr(initial_value, ptr, size);
+        result = opr(initial_value, ptr);
         initial_value = result;
         ptr += size;
     }
@@ -68,7 +60,7 @@ int main() {
 
     void* result1 = aggregate(arr1, sizeof(arr1[0]), 5, &initial_value01, add);
     printf("Sum of elements in the 1st array: %f\n", *(double*)result1);
-    void* result2 = aggregate(arr1, sizeof(arr1[0]), 5, &initial_value11, multiply);
+    void* result2 = aggregate(arr1, sizeof(arr1[0]), 5, &initial_value11, multiply_double);
     printf("Multiplication of elements in the 1st array: %f\n", *(double*)result2);
     void* result3 = aggregate(arr1, sizeof(arr1[0]), 5, &initial_value21, max);
     printf("Max of elements in the 1st array: %f\n", *(double*)result3);
@@ -77,7 +69,7 @@ int main() {
 
     void* result4 = aggregate(arr2, sizeof(arr2[0]), 5, &initial_value02, add);
     printf("Sum of elements in the 2nd array: %d\n", *(int*)result4);
-    void* result5 = aggregate(arr2, sizeof(arr2[0]), 5, &initial_value12, multiply);
+    void* result5 = aggregate(arr2, sizeof(arr2[0]), 5, &initial_value12, multiply_int);
     printf("Multiplication of elements in the 2nd array: %d\n", *(int*)result5);
     void* result6 = aggregate(arr2, sizeof(arr2[0]), 5, &initial_value22, max);
     printf("Max of elements in the 2nd array: %d\n", *(int*)result6);
