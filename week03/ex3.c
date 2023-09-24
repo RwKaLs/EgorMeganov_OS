@@ -46,6 +46,30 @@ void add_file(struct File* file, struct Directory* dir) {
     }
 }
 
+// Prints the name of the File file
+void show_file(File* file) {
+    printf("%s ", file -> name);
+}
+
+// Displays the content of the Directory dir
+void show_dir(Directory* dir) {
+    printf("\n DIRECTORY\n");
+    printf(" path: %s\n", dir->path);
+    printf(" files:\n");
+    printf(" [ ");
+    for (int i = 0; i < dir->nf; i++) {
+        show_file(&(dir->files[i]));
+    }
+    printf("]\n");
+    printf(" directories:\n");
+    printf(" { ");
+    for (int i = 0; i < dir->nd; i++) {
+        show_dir(dir->directories[i]);
+    }
+    printf("}\n");
+}
+
+// Adds the subdirectory dir1 to the directory dir2
 void add_dir(Directory* dir1, Directory* dir2) {
     if (dir1 && dir2) {
         dir2->directories[dir2->nd] = dir1;
@@ -64,29 +88,6 @@ void add_dir(Directory* dir1, Directory* dir2) {
     }
 }
 
-// Prints the name of the File file
-void show_file(File* file) {
-    printf("%s ", file -> name);
-}
-
-// Displays the content of the Directory dir
-void show_dir(Directory* dir) {
-    printf("\nDIRECTORY\n");
-    printf(" path: %s\n", dir->path);
-    printf(" files:\n");
-    printf(" [ ");
-    for (int i = 0; i < dir->nf; i++) {
-        show_file(&(dir->files[i]));
-    }
-    printf("]\n");
-    printf(" directories:\n");
-    printf(" { ");
-    for (int i = 0; i < dir->nd; i++) {
-        show_dir(dir->directories[i]);
-    }
-    printf("}\n");
-}
-
 int main() {
     Directory root;
     strcpy(root.name, "/");
@@ -96,10 +97,8 @@ int main() {
     Directory home, bin;
     strcpy(home.name, "home");
     strcpy(bin.name, "bin");
-    home.nf = 0;
-    home.nd = 0;
-    bin.nf = 0;
-    bin.nd = 0;
+    home.nf = 0, home.nd = 0;
+    bin.nf = 0, bin.nd = 0;
     add_dir(&home, &root);
     add_dir(&bin, &root);
     File bash, ex3_1, ex3_2;

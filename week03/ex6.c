@@ -38,8 +38,10 @@ void printArray(int arr[], int size) {
 int main() {
     int arr[] = {9, 7, 8, 3, 1, 5, 2, 4};
     int n = sizeof(arr)/sizeof(arr[0]);
+    printf("Input array: ");
+    printArray(arr, n);
     quickSort(arr, 0, n-1);
-    printf("Sorted array: \n");
+    printf("Sorted array: ");
     printArray(arr, n);
     return 0;
 }
