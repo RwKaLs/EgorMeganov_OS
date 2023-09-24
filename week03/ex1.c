@@ -20,7 +20,7 @@ int const_tri(int* p, int n) {
     return p[2];
 }
 
-// counting numbers starts from 0 ([0] = 0, [1] = 1, [2] = 1, [3] = 2, [4] = 4
+// counting numbers starts from 0 ([0] = 0, [1] = 1, [2] = 1, [3] = 2, [4] = 4)
 int main() {
     const int x = 1;
     const int* q = &x;
