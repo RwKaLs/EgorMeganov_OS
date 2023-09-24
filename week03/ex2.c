@@ -10,7 +10,7 @@ double distance(Point a, Point b) {
 }
 
 double area(Point A, Point B, Point C) {
-    return 0.5 * (A.x * B.y - B.x * A.y + B.x * C.y - C.x * B.y + C.x * A.y - A.x * C.y);
+    return 0.5 * fabs(A.x * B.y - B.x * A.y + B.x * C.y - C.x * B.y + C.x * A.y - A.x * C.y);
 }
 
 int main() {
