@@ -39,10 +39,8 @@ void* max(const void* a, const void* b) {
 
 void* aggregate(void* base, size_t size, int n, void* initial_value, void* (*opr)(const void*, const void*)) {
     void* ptr = base;
-    void* result;
     for(int i = 0; i < n; i++) {
-        result = opr(initial_value, ptr);
-        initial_value = result;
+        initial_value = opr(initial_value, ptr);
         ptr += size;
     }
     return initial_value;
