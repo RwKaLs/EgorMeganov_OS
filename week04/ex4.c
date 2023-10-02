@@ -19,8 +19,9 @@ int main(void) {
                 exit(127);
             }
         }
-        if ((pid = waitpid(pid, &status, 0)) < 0)
+        if ((pid = waitpid(pid, &status, 0)) < 0) {
             printf("waitpid error");
+        }
         printf("$ ");
     }
     return 0;
