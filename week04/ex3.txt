@@ -1,5 +1,5 @@
 With n=3 8 processes were created. The process hierarchy showed that each child process was created from the parent process. fork() creates a new process by duplicating the existing process. Calling fork() in a loop 3 times causes duplicating processes 3 times, so we have 2^3 = 8 processes.
 
-WIth n=5 32 processes were created. The process hierarchy showed that each child process was created from the parent process. Similarly to n=3 case, calling fork() in a loop 5 times causes duplicating processes 5 times, so we have 2^5 = 32 processes.
+With n=5 32 processes were created. The process hierarchy showed that each child process was created from the parent process. Similarly to n=3 case, calling fork() in a loop 5 times causes duplicating processes 5 times, so we have 2^5 = 32 processes.
 
 The difference between the two experiments is the number of processes created. 8 processes were created in case n=3, 32 processes were created in case n=5. This difference caused by the number of times `fork()` is called in the loop.
