@@ -5,31 +5,29 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#define MAX_MSG_SIZE 1024
+#define MAX_SIZE 1024
 
 int main(int argc, char *argv[]) {
     int n = atoi(argv[1]);
-    char buf[MAX_MSG_SIZE];
-    char pipe_name[16];
-
-    for (int i = 0; i < n; ++i) {
-        sprintf(pipe_name, "/tmp/ex1/s%d", i + 1);
-        mkfifo(pipe_name, 0666);
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("fork");
-            return 1;
-        }
-        if (pid == 0) {
-            int fd = open(pipe_name, O_WRONLY);
-            while(fgets(buf, MAX_MSG_SIZE, stdin)){
-                write(fd, buf, strlen(buf));
+    int fds[n];
+    char path[16];
+    for (int i = 0; i < n; i++) {
+        snprintf(path, 16, "/tmp/ex1/s%d", i+1);
+        mkfifo(path, 0666);
+        fds[i] = open(path, O_WRONLY);
+    }
+    char input[MAX_SIZE];
+    while (fgets(input, MAX_SIZE, stdin)) {
+        for (int i = 0; i < n; i++) {
+            pid_t pid = fork();
+            if (pid == 0) {
+                write(fds[i], input, strlen(input));
+                exit(EXIT_SUCCESS);
             }
-            close(fd);
-            exit(EXIT_SUCCESS);
         }
     }
-    while(1) {
-        sleep(1);
+    for (int i = 0; i < n; i++) {
+        close(fds[i]);
     }
+    exit(EXIT_SUCCESS);
 }
