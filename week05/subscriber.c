@@ -12,15 +12,16 @@ int main(int argc, char *argv[]) {
     int fd;
     char input[MAX_SIZE];
     ssize_t count;
+
     if ((fd = open(path, O_RDONLY)) < 0) {
         perror("Failed to open pipe");
         return 1;
     }
-    while ((count = read(fd, input, MAX_SIZE - 1)) > 0) {
-        input[count] = '\0';
-        printf("%s\n", input);
+
+    while (1) {
+        if ((count = read(fd, input, MAX_SIZE)) > 0){
+            input[count] = '\0';
+            printf("%s\n", input);
+        }
     }
-    sleep(3);
-    close(fd);
-    return 0;
 }
