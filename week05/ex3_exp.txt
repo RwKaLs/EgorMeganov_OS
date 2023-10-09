@@ -1,0 +1,1 @@
+The time decreases, because the range divided into parts, and each handled by its thread. So it allows concurrent computations. When we increase number of threads, the execution time decreases because of work distribution. However, at the end we have a bottleneck due to limited number of logic processors.
