@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir  /tmp/ex1/
+
 gcc -o publisher publisher.c
 
 n=$1
