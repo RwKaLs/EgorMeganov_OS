@@ -1,0 +1,1 @@
+In exercise 4, mutexes are used to prevent race conditions while distributing the prime number checking workload among multiple threads. This caused performance improvements in some cases (for larger values of 'n' and 'm,' as it utilized the power of parallelism). The use of mutexes ensured the correctness of parallel execution.

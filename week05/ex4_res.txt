@@ -1,50 +1,25 @@
 m=1
 
-real	0m5,341s
-user	0m5,327s
-sys	0m0,008s
+real	0m4,889s
+user	0m4,853s
+sys	0m0,012s
 m=2
 
-real	0m3,691s
-user	0m5,709s
-sys	0m0,174s
+real	0m3,402s
+user	0m5,177s
+sys	0m0,162s
 m=4
 
-real	0m2,077s
-user	0m6,085s
-sys	0m0,103s
+real	0m1,881s
+user	0m4,663s
+sys	0m0,604s
 m=10
 
-real	0m1,984s
-user	0m6,899s
-sys	0m0,628s
+real	0m1,369s
+user	0m5,800s
+sys	0m0,553s
 m=100
 
-real	0m1,306s
-user	0m6,021s
-sys	0m1,054s
-m=1
-
-real	0m6,387s
-user	0m4,434s
-sys	0m1,727s
-m=2
-
-real	0m3,913s
-user	0m6,350s
-sys	0m0,091s
-m=4
-
-real	0m2,376s
-user	0m6,604s
-sys	0m0,152s
-m=10
-
-real	0m2,034s
-user	0m6,923s
-sys	0m1,404s
-m=100
-
-real	0m1,405s
-user	0m5,907s
-sys	0m1,355s
+real	0m1,030s
+user	0m4,511s
+sys	0m1,051s

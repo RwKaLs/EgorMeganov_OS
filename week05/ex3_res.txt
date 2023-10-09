@@ -1,25 +1,25 @@
 m=1
 
-real	0m4.482s
-user	0m4.473s
-sys	0m0.000s
+real	0m5,097s
+user	0m5,021s
+sys	0m0,062s
 m=2
 
-real	0m2.831s
-user	0m4.557s
-sys	0m0.001s
+real	0m3,314s
+user	0m4,799s
+sys	0m0,239s
 m=4
 
-real	0m1.606s
-user	0m4.851s
-sys	0m0.000s
+real	0m1,878s
+user	0m5,391s
+sys	0m0,161s
 m=10
 
-real	0m1.022s
-user	0m7.250s
-sys	0m0.001s
+real	0m1,390s
+user	0m5,696s
+sys	0m0,547s
 m=100
 
-real	0m0.842s
-user	0m9.701s
-sys	0m0.008s
+real	0m1,245s
+user	0m5,423s
+sys	0m1,122s

@@ -7,3 +7,5 @@ do
     echo "m=$m" >> ex4_res.txt
     { time ./ex4 10000000 $m ; } 2>> ex4_res.txt
 done
+
+rm ex4
