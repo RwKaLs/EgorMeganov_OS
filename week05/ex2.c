@@ -10,7 +10,7 @@ typedef struct {
 
 void* print_message(void* arg) {
     Thread* thread = (Thread*) arg;
-    printf("%s\n", thread->message);
+    printf("Thread id: %lu. %s\n", thread->id, thread->message);
     pthread_exit(NULL);
 }
 
