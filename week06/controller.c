@@ -8,6 +8,7 @@ void handle_sigint() {
     int pid;
     fscanf(file, "%d", &pid);
     fclose(file);
+    remove("/var/run/agent.pid");
     kill(pid, SIGTERM);
     exit(0);
 }

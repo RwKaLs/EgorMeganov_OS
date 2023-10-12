@@ -21,6 +21,12 @@ int main() {
     FILE *file = fopen("/var/run/agent.pid", "w");
     fprintf(file, "%d", getpid());
     fclose(file);
+    FILE *text = fopen("text.txt", "r");
+    char s[1024];
+    while (fgets(s, 1024, text)) {
+        printf("%s", s);
+    }
+    fclose(text);
 
     signal(SIGUSR1, handle_sigusr1);
     signal(SIGUSR2, handle_sigusr2);
