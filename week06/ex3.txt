@@ -1,0 +1,4 @@
+The output difference between the FCFS and SJF scheduling algorithms is in the order
+of process execution. In SJF, processes with shorter burst times are prioritized,
+which can lead to different process execution order and potentially lower waiting
+and turnaround times compared to FCFS.
