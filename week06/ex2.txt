@@ -1,0 +1,11 @@
+Changing the `TRI_BASE` macro to a smaller number like 100 would affect the range of
+numbers that the `big_n` function can generate. It means that the worker processes
+searches for triangular numbers in a smaller range, which could potentially
+make them find triangular numbers more quickly.
+
+If the arrival time of all processes is zero, then all processes are ready to run
+at the start of the simulation. Due to FCFS scheduling algorithm, the order
+of execution of the processes determines by their order in the process array.
+The process at index 0 would run first, followed by the process at index 1, and so on.
+This is because FCFS treats all ready-to-run processes as a queue and executes them
+in the order they were added to the queue.

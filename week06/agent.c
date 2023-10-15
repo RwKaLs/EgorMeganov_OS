@@ -14,6 +14,11 @@ void handle_sigusr1() {
 
 void handle_sigusr2() {
     printf("Process terminating...\n");
+    FILE *file = fopen("/var/run/agent.pid", "r");
+    int pid;
+    fscanf(file, "%d", &pid);
+    fclose(file);
+    remove("/var/run/agent.pid");
     exit(0);
 }
 
@@ -27,7 +32,6 @@ int main() {
         printf("%s", s);
     }
     fclose(text);
-
     signal(SIGUSR1, handle_sigusr1);
     signal(SIGUSR2, handle_sigusr2);
     while(1) {
