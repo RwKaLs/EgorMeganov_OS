@@ -3,16 +3,21 @@
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
+#include <stdbool.h>
 #include <limits.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+
 #define PS_MAX 10
+
+int quantum;
 
 // holds the scheduling data of one process
 typedef struct{
     int idx; // process idx (index)
     int at, bt, rt, wt, ct, tat; // arrival time, burst time, response time, waiting time, completion time, turnaround time.
     int burst; // remaining burst (this should decrement when the process is being executed)
+    int quantum; // remaining part of quantum
 } ProcessData;
 
 // the idx of the running process
@@ -84,25 +89,42 @@ void create_process(int new_process) {
 
 // find next process for running
 ProcessData find_next_process() {
-    int location = -1;
-    int min_burst = INT_MAX;
+    int location = 0;
 
-    for (int i = 0; i < data_size; i++){
-        if (data[i].burst > 0 && data[i].at <= total_time) {
-            if (data[i].burst < min_burst) {
-                location = i;
-                min_burst = data[i].burst;
+    bool allZeros = true;
+    for (int i = 0; i < data_size; i++) {
+        if (data[i].burst > 0 && data[i].quantum > 0) {
+            allZeros = false;
+            break;
+        }
+    }
+    if (allZeros) {
+        for (int i = 0; i < data_size; i++) {
+            if (data[i].burst > 0 && data[i].quantum <= 0) {
+                data[i].quantum = quantum;
             }
         }
     }
-
+    location = -1;
+    int min_at = INT_MAX;
+    for (int i = 0; i < data_size; i++){
+        if (data[i].burst > 0 && data[i].quantum > 0 && data[i].at <= total_time && data[i].at < min_at) {
+            location = i;
+            min_at = data[location].at;
+        }
+    }
     // If no process has arrived yet, increment the time and recursively call the function
     if (location == -1) {
         printf("Scheduler: Runtime: %u seconds.\nNo process has arrived yet.\n", total_time);
         total_time++;
         return find_next_process();
     }
-
+    if(data[location].at > total_time){
+        printf("Scheduler: Runtime: %u seconds.\nProcess %d: has not arrived yet.\n", total_time, location);
+        // increment the time
+        total_time++;
+        return find_next_process();
+    }
     return data[location];
 }
 
@@ -147,9 +169,12 @@ void check_burst(){
 
 // This function is called every one second as handler for SIGALRM signal
 void schedule_handler(int signum) {
+    // increment the total time
     total_time++;
+
     if(running_process != -1) {
         data[running_process].burst--;
+        data[running_process].quantum--;
         printf("Scheduler: Runtime: %u seconds\n", total_time);
         printf("Process %d is running with %d seconds left\n", running_process, data[running_process].burst);
         if(data[running_process].burst == 0) {
@@ -160,23 +185,36 @@ void schedule_handler(int signum) {
             data[running_process].tat = data[running_process].ct - data[running_process].at;
             data[running_process].wt = data[running_process].tat - data[running_process].bt;
             running_process = -1;
+        } else if (data[running_process].quantum == 0) {
+            printf("Scheduler: Stopping Process %d (Remaining Time: %d)\n", running_process, data[running_process].burst);
+            suspend(ps[running_process]);
+            running_process = -1;
         }
     }
     check_burst();
-    if(running_process == -1 || data[running_process].burst <= 0) {
+    if (data[running_process].burst <= 0) {
         ProcessData next_process = find_next_process();
-        int next_idx = next_process.idx;
-        if(ps[next_idx] == 0) {
-            printf("Scheduler: Starting Process %d (Remaining Time: %d)\n", next_idx, data[next_idx].burst);
-            create_process(next_idx);
-            data[next_idx].rt = (int) total_time - data[next_idx].at;
-        } else {
-            printf("Scheduler: Resuming Process %d (Remaining Time: %d)\n", next_idx, data[next_idx].burst);
-            resume(ps[next_idx]);
+        if (running_process != next_process.idx) {
+            int next_idx = next_process.idx;
+            if (ps[next_idx] == 0) {
+                create_process(next_idx);
+                printf("Scheduler: Starting Process %d (Remaining Time: %d)\n", next_idx, data[next_idx].burst);
+                data[next_idx].rt = (int) total_time - data[next_idx].at;
+            } else {
+                if (running_process != -1) {
+                    printf("Scheduler: Stopping Process %d (Remaining Time: %d)\n", running_process,
+                           data[running_process].burst);
+                    suspend(ps[running_process]);
+                }
+                printf("Scheduler: Resuming Process %d (Remaining Time: %d)\n", next_idx, data[next_idx].burst);
+                resume(ps[next_idx]);
+            }
+            running_process = next_idx;
+            data[running_process].quantum = quantum;
         }
-        running_process = next_idx;
     }
 }
+
 
 int main(int argc, char *argv[]) {
     // read the data file
@@ -187,6 +225,8 @@ int main(int argc, char *argv[]) {
     } else {
         read_file(in_file);
     }
+    printf("Input quantum: ");
+    scanf("%d", &quantum);
     // set a timer
     struct itimerval timer;
     // the timer goes off 1 second after reset

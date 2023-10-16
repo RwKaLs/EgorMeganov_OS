@@ -89,13 +89,9 @@ ProcessData find_next_process() {
     int min_at = INT_MAX;
 
     for (int i = 0; i < data_size; i++){
-        if (data[i].burst > 0) {
-            if (data[i].burst > 0 && data[i].at <= total_time) {
-                if (data[i].at < min_at) {
-                    location = i;
-                    min_at = data[location].at;
-                }
-            }
+        if (data[i].burst > 0 && data[i].at <= total_time && data[i].at < min_at) {
+            location = i;
+            min_at = data[location].at;
         }
     }
     // If no process has arrived yet, increment the time and recursively call the function
@@ -131,7 +127,7 @@ void report() {
     }
 
     printf("data size = %d\n", data_size);
-    float avg_wt = (float)sum_wt/(float)data_size; //TODO: float conv data_size
+    float avg_wt = (float)sum_wt/(float)data_size;
     float avg_tat = (float)sum_tat/(float)data_size;
     printf("Average results for this run:\n");
     printf("	avg_wt=%f\n", avg_wt);
