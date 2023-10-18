@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -11,17 +10,14 @@ int main() {
         perror("open /dev/random");
         return 1;
     }
-
     FILE *file = fopen("text.txt", "w");
     if (file == NULL) {
         perror("fopen text.txt");
         return 1;
     }
-
     long sz = sysconf(_SC_PAGESIZE);
-    long file_size = 5*1024*1024; // Adjusted for 500MiB
-    long chunk_size = 1024*sz; // Adjusted for 1024th multiple of the page size
-
+    long file_size = 500*1024*1024;
+    long chunk_size = 1024*sz;
     char c;
     int count = 0;
     long i = 0;
@@ -49,7 +45,6 @@ int main() {
     int total = 0;
     off_t actual_size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
-
     for (i = 0; i < actual_size; i += chunk_size) {
         long current_chunk_size = chunk_size;
         if (i + current_chunk_size > actual_size) {
