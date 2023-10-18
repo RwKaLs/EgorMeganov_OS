@@ -47,17 +47,20 @@ int main() {
         return 1;
     }
     int total = 0;
-    for (i = 0; i < file_size; i += chunk_size) {
+    off_t actual_size = lseek(fd, 0, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+
+    for (i = 0; i < actual_size; i += chunk_size) {
         long current_chunk_size = chunk_size;
-        if (i + current_chunk_size > file_size) {
-            current_chunk_size = file_size - i;
+        if (i + current_chunk_size > actual_size) {
+            current_chunk_size = actual_size - i;
         }
         char *data = mmap(NULL, current_chunk_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, i);
         if (data == MAP_FAILED) {
             perror("mmap");
             return 1;
         }
-        for (int j = 0; j < current_chunk_size; ++j) { // Changed condition here
+        for (int j = 0; j < current_chunk_size; ++j) {
             if (isupper(data[j])) {
                 ++total;
                 data[j] = tolower(data[j]);
