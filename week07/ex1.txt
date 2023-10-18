@@ -1,0 +1,8 @@
+First Fit: simple and fast algorithm, as it allocates the first block of sufficient size it finds. However, it can lead to fragmentation over time, as it might leave small free blocks scattered throughout the memory.
+Best Fit: algorithm tries to minimize wasted space by choosing the smallest free block that can accommodate the requested size. While this can reduce fragmentation, it can be slower than First Fit because it needs to search the entire memory to find the best block.
+Worst Fit: algorithm tries to leave the largest possible free block after allocation by choosing the largest free block for each request. The idea is to reduce the chance of having many small unusable blocks. However, it is slower than First Fit because it needs to search the entire memory.
+
+We can see the difference in throughput for example from Gist:
+First Fit throughput: 2943.477008
+Best Fit throughput: 78.700506
+Worst Fit throughput: 85.410868
