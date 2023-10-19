@@ -30,6 +30,7 @@ int main() {
             fputc(c, file);
             ++i;
             if (++count == 1024) {
+                ++i;
                 fputc('\n', file);
                 count = 0;
             }
@@ -43,12 +44,10 @@ int main() {
         return 1;
     }
     int total = 0;
-    off_t actual_size = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
-    for (i = 0; i < actual_size; i += chunk_size) {
+    for (i = 0; i < file_size; i += chunk_size) {
         long current_chunk_size = chunk_size;
-        if (i + current_chunk_size > actual_size) {
-            current_chunk_size = actual_size - i;
+        if (i + current_chunk_size > file_size) {
+            current_chunk_size = file_size - i;
         }
         char *data = mmap(NULL, current_chunk_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, i);
         if (data == MAP_FAILED) {
