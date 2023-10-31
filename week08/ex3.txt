@@ -1,5 +1,5 @@
-When running the program in the background and observing the memory with vmstat 1,
+When running the program in the background and observing the memory,
 we can see that the memory usage increases every second as the program allocates more memory.
-The 'si' and 'so' fields in vmstat output represent the amount of memory swapped in from disk ('si') and out to disk ('so').
+The si and so fields in vmstat output represent the amount of memory swapped in from disk and out to disk.
 If these values are high, it indicates that the system is swapping a lot of data due to insufficient physical memory.
-In our case, if there's enough physical memory available, these values should remain low.
+In our case, if there's enough physical memory available, these values should remain low. However, if we increase the amount of memory to use (e.g. 2000*1024*1024), we will see the changes in si and so fields.
