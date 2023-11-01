@@ -11,7 +11,7 @@ pid_pager=$!
 
 sleep 3
 
-./mmu 4 R0 R1 W1 R0 R2 W2 R9 R3 W3 $pid_pager
+gnome-terminal -- bash -c "./mmu 4 R0 R1 W1 R0 R2 W2 R0 R3 W2 $pid_pager; exec bash"
 
 wait $pid_pager
 

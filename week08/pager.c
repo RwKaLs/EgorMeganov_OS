@@ -7,9 +7,8 @@
 #include <string.h>
 #include <signal.h>
 #include <stdbool.h>
-#include <time.h>
 
-#define PAGE_SIZE 9
+#define PSIZE 9
 
 typedef struct PTE {
     bool valid;
@@ -22,7 +21,7 @@ PTE *pageTable;
 
 int nFrames;
 int nPages;
-int diskAccessCount = 0;
+int diskAccessCounter = 0;
 
 void signalHandler(int signum) {
 //    printf("SIGUSR1 signal received.\n");
@@ -73,28 +72,8 @@ void signalHandler(int signum) {
 //    exit(0);
 }
 
-int main(int argc, char *argv[]) {
-    signal(SIGUSR1, signalHandler);
-    srand(time(NULL));
-    nPages = atoi(argv[1]);
-    nFrames = atoi(argv[2]);
-    char disk[nPages][PAGE_SIZE];
-    char RAM[nFrames][PAGE_SIZE];
-    for (int i = 0; i < nPages; i++){
-        strcpy(disk[i], "_RANDOM_");
-    }
-    for (int i = 0; i < nFrames; i++){
-        strcpy(RAM[i], "_RANDOM_");
-    }
-    int pageTableSize = nPages * sizeof(PTE);
-    int pageTableFileDescriptor = open("/tmp/ex2/pagetable", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-    if (pageTableFileDescriptor == -1) {
-        perror("Pagetable open error");
-        exit(EXIT_FAILURE);
-    }
-    ftruncate(pageTableFileDescriptor, pageTableSize);
-    pageTable = mmap(NULL, pageTableSize, PROT_READ | PROT_WRITE, MAP_SHARED, pageTableFileDescriptor, 0);
-    for (int i = 0; i < nPages; i++) {
+void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
+    for (int i = 0; i < nPages; ++i) {
         pageTable[i].valid = false;
         pageTable[i].frame = -1;
         pageTable[i].dirty = false;
@@ -109,77 +88,98 @@ int main(int argc, char *argv[]) {
     printf("------------------------------------------\n");
     printf("Initialized page table\n");
     printf("Page table\n");
-    for (int i = 0; i < nPages; i++){
+    for (int i = 0; i < nPages; ++i){
         printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d\n",
                i, pageTable[i].valid, pageTable[i].frame, pageTable[i].dirty, pageTable[i].referenced);
     }
     printf("------------------------------------------\n");
     printf("Initialized memory\n");
-    printf("Memory array\n");
-    for (int i = 0; i < nFrames; i++){
+    printf("RAM array\n");
+    for (int i = 0; i < nFrames; ++i){
         printf("Frame %d ---> %s\n", i, RAM[i]);
     }
-    int requestedPage;
-    int mmuProcessId;
+}
+
+int main(int argc, char *argv[]) {
+    signal(SIGUSR1, signalHandler);
+    nPages = atoi(argv[1]);
+    nFrames = atoi(argv[2]);
+    char disk[nPages][PSIZE];
+    char RAM[nFrames][PSIZE];
+    for (int i = 0; i < nPages; ++i){
+        strcpy(disk[i], "_RANDOM_");
+    }
+    for (int i = 0; i < nFrames; ++i){
+        strcpy(RAM[i], "_RANDOM_");
+    }
+    int ptSize = nPages * sizeof(PTE);
+    int pageTableFileDescriptor = open("/tmp/ex2/pagetable", O_RDWR | O_CREAT, S_IRWXU);
+    ftruncate(pageTableFileDescriptor, ptSize);
+    pageTable = mmap(NULL, ptSize, PROT_READ | PROT_WRITE, MAP_SHARED, pageTableFileDescriptor, 0);
+    initialize(disk, RAM);
+    int requestedPage = -1;
+    int mmuProcessId = -1;
+    int ind, victim;
     while(1){
         pause();
-        requestedPage = -1;
-        mmuProcessId = -1;
-        for (int i = 0; i < nPages; i++) {
+        for (int i = 0; i < nPages; ++i) {
             if (pageTable[i].referenced != 0) {
                 requestedPage = i;
                 mmuProcessId = pageTable[i].referenced;
+                break;
             }
         }
         if (requestedPage != -1) {
             printf("------------------------------------------\n");
             printf("A disk access request from MMU Process (pid=%d)\n", mmuProcessId);
             printf("Page %d is referenced\n", requestedPage);
-            int freeFrameIndex = -1;
-            for (int i = 0; i < nFrames; i++){
+            ind = -1;
+            for (int i = 0; i < nFrames; ++i){
                 if (strcmp(RAM[i], "_RANDOM_") == 0){
-                    freeFrameIndex = i;
+                    ind = i;
                     break;
                 }
             }
-            if (freeFrameIndex < 0) {
+            if (ind < 0) {
                 printf("We do not have free frames in memory\n");
-                int victimPage = rand() % nPages;
-                freeFrameIndex = pageTable[victimPage].frame;
-                printf("Choose a random victim page %d\n", victimPage);
-                printf("Replace/Evict it with page %d to be allocated to frame %d\n", requestedPage, freeFrameIndex);
-                if (pageTable[victimPage].dirty) {
-                    strcpy(disk[victimPage], RAM[freeFrameIndex]);
-                    diskAccessCount++;
+                victim = rand() % nPages;
+                ind = pageTable[victim].frame;
+                printf("Choose a random victim page %d\n", victim);
+                printf("Replace/Evict it with page %d to be allocated to frame %d\n", requestedPage, ind);
+                if (pageTable[victim].dirty) {
+                    strcpy(disk[victim], RAM[ind]);
+                    diskAccessCounter++;
                 }
-                pageTable[victimPage].valid = false;
-                pageTable[victimPage].frame = -1;
-                pageTable[victimPage].dirty = false;
-                pageTable[victimPage].referenced = 0;
+                pageTable[victim].valid = false;
+                pageTable[victim].frame = -1;
+                pageTable[victim].dirty = false;
+                pageTable[victim].referenced = 0;
             } else {
-                printf("We can allocate it to free frame %d\n", freeFrameIndex);
+                printf("We can allocate it to free frame %d\n", ind);
             }
-            printf("Copy data from the disk (page=%d) to memory (frame=%d)\n", requestedPage, freeFrameIndex);
-            strcpy(RAM[freeFrameIndex], disk[requestedPage]);
-            diskAccessCount++;
-            printf("Memory array\n");
-            for (int i = 0; i < nFrames; i++){
+            printf("Copy data from the disk (page=%d) to memory (frame=%d)\n", requestedPage, ind);
+            strcpy(RAM[ind], disk[requestedPage]);
+            diskAccessCounter++;
+            printf("RAM array\n");
+            for (int i = 0; i < nFrames; ++i){
                 printf("Frame %d ---> %s\n", i, RAM[i]);
             }
             pageTable[requestedPage].valid = true;
-            pageTable[requestedPage].frame = freeFrameIndex;
+            pageTable[requestedPage].frame = ind;
             pageTable[requestedPage].referenced = 0;
-            printf("Disk accesses is %d so far\n", diskAccessCount);
+            printf("Disk accesses is %d so far\n", diskAccessCounter);
             printf("Resume MMU process\n");
             kill(mmuProcessId, SIGCONT);
         } else {
             printf("------------------------------------------\n");
-            printf("%d disk accesses in total\n", diskAccessCount);
-            munmap(pageTable, pageTableSize);
+            printf("%d disk accesses in total\n", diskAccessCounter);
+            munmap(pageTable, ptSize);
             remove("/tmp/ex2/pagetable");
             rmdir("/tmp/ex2");
             printf("Pager is terminated\n");
             exit(EXIT_SUCCESS);
         }
+        requestedPage = -1;
+        mmuProcessId = -1;
     }
 }

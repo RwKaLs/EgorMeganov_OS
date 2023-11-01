@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         strcpy(requests[i], argv[i + 2]);
     }
     int pager_pid = atoi(argv[argc - 1]);
-    int fd = open("/tmp/ex2/pagetable", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int fd = open("/tmp/ex2/pagetable", O_RDWR | O_CREAT, S_IRWXU);
     ftruncate(fd, npages * sizeof(PTE));
     pageTable = mmap(NULL, npages * sizeof(PTE), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     for (int i = 0; i < npages; i++) {
