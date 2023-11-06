@@ -1,0 +1,5 @@
+The Aging algorithm had the highest hit ratio, which means it had the highest rate of successful page accesses without causing a page fault. This could be because the Aging algorithm provides a good approximation of the Least Recently Used (LRU) approach, which performs well in many scenarios.
+
+The Random algorithm had the second highest hit ratio. Its performance can vary depending on the sequence of page requests and the distribution of page accesses.
+
+The NFU algorithm had the lowest hit ratio in this test. While NFU is designed to approximate LRU, it may not perform as well if the page access pattern doesn’t favor older pages.
