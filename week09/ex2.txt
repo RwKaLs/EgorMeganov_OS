@@ -1,0 +1,1 @@
+As the number of frames and pages increases, the hit ratio also increases because there are more opportunities for a page to be in the frame when a request comes in. Similarly, the TLB miss ratio might decrease because the TLB can store more page-frame mappings.
