@@ -13,7 +13,6 @@ typedef struct PTE {
     int frame;
     bool dirty;
     int referenced;
-    int counter;
 } PTE;
 
 PTE *pageTable;
@@ -53,7 +52,6 @@ int main(int argc, char *argv[]) {
         sleep(1);
         char accessMode = requests[i][0];
         int pageNumber = atoi(&requests[i][1]);
-        pageTable[pageNumber].counter++;
         printf("------------------------------------------\n");
         if (accessMode == 'R') {
             printf("Read request for page %d\n", pageNumber);
@@ -83,8 +81,8 @@ int main(int argc, char *argv[]) {
         }
         printf("Page table\n");
         for (int j = 0; j < npages; j++){
-            printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d, counter=%d\n",
-                   j, pageTable[j].valid, pageTable[j].frame, pageTable[j].dirty, pageTable[j].referenced, pageTable[j].counter);
+            printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d\n",
+                   j, pageTable[j].valid, pageTable[j].frame, pageTable[j].dirty, pageTable[j].referenced);
         }
         printf("\n");
     }

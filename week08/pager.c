@@ -16,7 +16,6 @@ typedef struct PTE {
     int frame;
     bool dirty;
     int referenced;
-    int counter;
 } PTE;
 
 PTE *pageTable;
@@ -24,31 +23,6 @@ PTE *pageTable;
 int nFrames;
 int nPages;
 int diskAccessCounter = 0;
-
-int myRandom() {
-
-}
-
-int nfu() {
-    for(int i = 0; i < nPages; i++) {
-        if(pageTable[i].referenced) {
-            pageTable[i].referenced = false;
-        }
-    }
-    int min = pageTable[0].counter;
-    int index = 0;
-    for(int i = 1; i < nPages; i++) {
-        if(pageTable[i].counter < min) {
-            min = pageTable[i].counter;
-            index = i;
-        }
-    }
-    return index;
-}
-
-int aging() {
-
-}
 
 void signalHandler(int signum) {
 
@@ -60,7 +34,6 @@ void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
         pageTable[i].frame = -1;
         pageTable[i].dirty = false;
         pageTable[i].referenced = 0;
-        pageTable[i].counter = 0;
     }
     printf("------------------------------------------\n");
     printf("Initialized disk\n");
@@ -72,8 +45,8 @@ void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
     printf("Initialized page table\n");
     printf("Page table\n");
     for (int i = 0; i < nPages; ++i){
-        printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d, counter=%d\n",
-               i, pageTable[i].valid, pageTable[i].frame, pageTable[i].dirty, pageTable[i].referenced, pageTable[i].counter);
+        printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d\n",
+               i, pageTable[i].valid, pageTable[i].frame, pageTable[i].dirty, pageTable[i].referenced);
     }
     printf("------------------------------------------\n");
     printf("Initialized memory\n");
@@ -88,7 +61,6 @@ void genString(char *s, const int len) {
     for (int i = 0; i < len; ++i) {
         s[i] = alph[rand() % (sizeof(alph) - 1)];
     }
-
     s[len] = '\0';
 }
 
