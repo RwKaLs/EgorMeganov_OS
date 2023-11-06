@@ -89,7 +89,7 @@ void genString(char *s, const int len) {
         s[i] = alph[rand() % (sizeof(alph) - 1)];
     }
 
-    s[len] = 0;
+    s[len] = '\0';
 }
 
 int main(int argc, char *argv[]) {
