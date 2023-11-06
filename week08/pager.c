@@ -7,6 +7,7 @@
 #include <string.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define PSIZE 9
 
@@ -15,6 +16,7 @@ typedef struct PTE {
     int frame;
     bool dirty;
     int referenced;
+    int counter;
 } PTE;
 
 PTE *pageTable;
@@ -23,53 +25,33 @@ int nFrames;
 int nPages;
 int diskAccessCounter = 0;
 
+int myRandom() {
+
+}
+
+int nfu() {
+    for(int i = 0; i < nPages; i++) {
+        if(pageTable[i].referenced) {
+            pageTable[i].referenced = false;
+        }
+    }
+    int min = pageTable[0].counter;
+    int index = 0;
+    for(int i = 1; i < nPages; i++) {
+        if(pageTable[i].counter < min) {
+            min = pageTable[i].counter;
+            index = i;
+        }
+    }
+    return index;
+}
+
+int aging() {
+
+}
+
 void signalHandler(int signum) {
-//    printf("SIGUSR1 signal received.\n");
-//
-//    FILE *file = fopen("/tmp/mmu.pid", "w");
-//    pid_t mmu_pid;
-//    fscanf(file, "%d", &mmu_pid);
-//    fclose(file);
-//
-//    int disk_accesses = 0;
-//    for (int i = 0; i < npages; i++) {
-//        if (page_table[i].referenced != 0) {
-//            int frame_to_use = -1;
-//            for (int j = 0; j < nframes; j++) {
-//                if (strcmp(RAM[j], "_RANDOM!_") == 0) {
-//                    frame_to_use = j;
-//                    break;
-//                }
-//            }
-//            if (frame_to_use == -1) {
-//                frame_to_use = rand() % nframes;
-//                if (page_table[frame_to_use].dirty) {
-//                    strcpy(disk[frame_to_use], RAM[frame_to_use]);
-//                    disk_accesses++;
-//                }
-//                page_table[frame_to_use].valid = false;
-//                page_table[frame_to_use].frame = -1;
-//                page_table[frame_to_use].dirty = false;
-//                page_table[frame_to_use].referenced = 0;
-//            }
-//            strcpy(RAM[frame_to_use], disk[i]);
-//            page_table[i].valid = true;
-//            page_table[i].frame = frame_to_use;
-//            page_table[i].dirty = false;
-//            page_table[i].referenced = 0;
-//            for (int j = 0; j < nframes; j++) {
-//                printf("%s\n", RAM[j]);
-//            }
-//            kill(mmu_pid, SIGCONT);
-//            return;
-//        }
-//    }
-//    printf("No non-zero referenced field found. Pager process terminates.\n");
-//    printf("Total number of disk accesses: %d\n", disk_accesses);
-//    munmap(page_table, npages * sizeof(PTE));
-//    close(fd);
-//    printf("\nexit--------------\n");
-//    exit(0);
+
 }
 
 void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
@@ -78,6 +60,7 @@ void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
         pageTable[i].frame = -1;
         pageTable[i].dirty = false;
         pageTable[i].referenced = 0;
+        pageTable[i].counter = 0;
     }
     printf("------------------------------------------\n");
     printf("Initialized disk\n");
@@ -89,8 +72,8 @@ void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
     printf("Initialized page table\n");
     printf("Page table\n");
     for (int i = 0; i < nPages; ++i){
-        printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d\n",
-               i, pageTable[i].valid, pageTable[i].frame, pageTable[i].dirty, pageTable[i].referenced);
+        printf("Page %d ---> valid=%d, frame=%d, dirty=%d, referenced=%d, counter=%d\n",
+               i, pageTable[i].valid, pageTable[i].frame, pageTable[i].dirty, pageTable[i].referenced, pageTable[i].counter);
     }
     printf("------------------------------------------\n");
     printf("Initialized memory\n");
@@ -100,17 +83,24 @@ void initialize(char disk[nPages][PSIZE], char RAM[nPages][PSIZE]) {
     }
 }
 
+void genString(char *s, const int len) {
+    static const char alph[] ="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    for (int i = 0; i < len; ++i) {
+        s[i] = alph[rand() % (sizeof(alph) - 1)];
+    }
+
+    s[len] = 0;
+}
+
 int main(int argc, char *argv[]) {
     signal(SIGUSR1, signalHandler);
+    srand(time(NULL));
     nPages = atoi(argv[1]);
     nFrames = atoi(argv[2]);
     char disk[nPages][PSIZE];
     char RAM[nFrames][PSIZE];
-    for (int i = 0; i < nPages; ++i){
-        strcpy(disk[i], "_RANDOM_");
-    }
-    for (int i = 0; i < nFrames; ++i){
-        strcpy(RAM[i], "_RANDOM_");
+    for (int i = 0; i < nPages; ++i) {
+        genString(disk[i], PSIZE - 1);
     }
     int ptSize = nPages * sizeof(PTE);
     int pageTableFileDescriptor = open("/tmp/ex2/pagetable", O_RDWR | O_CREAT, S_IRWXU);
@@ -135,7 +125,7 @@ int main(int argc, char *argv[]) {
             printf("Page %d is referenced\n", requestedPage);
             ind = -1;
             for (int i = 0; i < nFrames; ++i){
-                if (strcmp(RAM[i], "_RANDOM_") == 0){
+                if (strcmp(RAM[i], "") == 0){
                     ind = i;
                     break;
                 }
@@ -143,7 +133,12 @@ int main(int argc, char *argv[]) {
             if (ind < 0) {
                 printf("We do not have free frames in memory\n");
                 victim = rand() % nPages;
+                //victim = nfu();
                 ind = pageTable[victim].frame;
+                while (ind == -1) {
+                    victim = rand() % nPages;
+                    ind = pageTable[victim].frame;
+                }
                 printf("Choose a random victim page %d\n", victim);
                 printf("Replace/Evict it with page %d to be allocated to frame %d\n", requestedPage, ind);
                 if (pageTable[victim].dirty) {
