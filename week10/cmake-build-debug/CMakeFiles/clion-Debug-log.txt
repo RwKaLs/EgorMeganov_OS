@@ -1,1 +1,0 @@
-CMakeLists.txt not found in /home/egor/EgorMeganov_OS/week10 Select CMakeLists.txt
