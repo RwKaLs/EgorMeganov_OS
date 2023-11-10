@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
     link(file1, file12);
     find_all_hlinks("myfile1.txt");
     rename(file1, "/tmp/myfile1.txt");
+    remove(file1);
     file = fopen(file11, "w");
     fprintf(file, "Hello world 2.0.");
     fclose(file);
