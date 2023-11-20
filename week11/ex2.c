@@ -47,6 +47,7 @@ void create(char name[16], int size) {
                     blockCount++;
                 }
             }
+            printf("File %s created\n", name);
             return;
         }
     }
@@ -60,6 +61,7 @@ void delete(char name[16]) {
                 mydisk.superBlock.freeBlockList[mydisk.superBlock.inodes[i].blockPointers[j]] = 0;
             }
             mydisk.superBlock.inodes[i].used = 0;
+            printf("File %s deleted\n", name);
             return;
         }
     }
@@ -74,6 +76,7 @@ void myRead(char name[16], int blockNum, char buf[1024]) {
                 return;
             }
             memcpy(buf, mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], sizeof(char) * 1024);
+            printf("File %s was read\n", name);
             return;
         }
     }
@@ -88,6 +91,7 @@ void myWrite(char name[16], int blockNum, char buf[1024]) {
                 return;
             }
             memcpy(mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], buf, sizeof(char) * 1024);
+            printf("File %s was written\n", name);
             return;
         }
     }
@@ -95,11 +99,13 @@ void myWrite(char name[16], int blockNum, char buf[1024]) {
 }
 
 void ls(void) {
+    printf("------------\n");
     for (int i = 0; i < 16; i++) {
         if (mydisk.superBlock.inodes[i].used == 1) {
             printf("%s %d\n", mydisk.superBlock.inodes[i].name, mydisk.superBlock.inodes[i].size);
         }
     }
+    printf("------------\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -127,7 +133,7 @@ int main(int argc, char *argv[]) {
                 myRead(name, blockNum, buf);
                 break;
             case 'W':
-                sscanf(line, "%*s %s %d %s", name, &blockNum, buf);
+                sscanf(line, "%*s %s %d", name, &blockNum);
                 myWrite(name, blockNum, buf);
                 break;
             case 'L':
