@@ -50,6 +50,7 @@ void create(char name[16], int size) {
             return;
         }
     }
+    printf("No more free inodes\n");
 }
 
 void delete(char name[16]) {
@@ -62,6 +63,7 @@ void delete(char name[16]) {
             return;
         }
     }
+    printf("File not found\n");
 }
 
 void myRead(char name[16], int blockNum, char buf[1024]) {
@@ -75,6 +77,7 @@ void myRead(char name[16], int blockNum, char buf[1024]) {
             return;
         }
     }
+    printf("File not found\n");
 }
 
 void myWrite(char name[16], int blockNum, char buf[1024]) {
@@ -88,6 +91,7 @@ void myWrite(char name[16], int blockNum, char buf[1024]) {
             return;
         }
     }
+    printf("File not found\n");
 }
 
 void ls(void) {
