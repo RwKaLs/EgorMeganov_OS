@@ -4,24 +4,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct inode {
+typedef struct inode {
     char name[16]; // file name
     int size; // file size (in number of blocks)
     int blockPointers[8]; // direct block pointers
     int used; // 0 => inode is free; 1 => in use
-};
+} inode;
 
-struct superblock {
+typedef struct superblock {
     char freeBlockList[128];
     struct inode inodes[16];
-};
+} superblock;
 
-struct disk {
+typedef struct disk {
     struct superblock superBlock;
     char blocks[127][1024];
-};
+} disk;
 
-struct disk mydisk;
+disk mydisk;
 
 void create(char name[16], int size) {
     for (int i = 0; i < 16; i++) {
@@ -71,7 +71,7 @@ void myRead(char name[16], int blockNum, char buf[1024]) {
                 printf("Invalid block number\n");
                 return;
             }
-            memcpy(buf, mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], 1024);
+            memcpy(buf, mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], sizeof(char) * 1024);
             return;
         }
     }
@@ -84,7 +84,7 @@ void myWrite(char name[16], int blockNum, char buf[1024]) {
                 printf("Invalid block number\n");
                 return;
             }
-            memcpy(mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], buf, 1024);
+            memcpy(mydisk.blocks[mydisk.superBlock.inodes[i].blockPointers[blockNum]], buf, sizeof(char) * 1024);
             return;
         }
     }
@@ -108,18 +108,22 @@ int main(int argc, char *argv[]) {
     while (fgets(line, sizeof(line), file)) {
         char cmd[2], name[16], buf[1024];
         int size, blockNum;
-        sscanf(line, "%s %s %d %d %s", cmd, name, &size, &blockNum, buf);
+        sscanf(line, "%s", cmd);
         switch (cmd[0]) {
             case 'C':
+                sscanf(line, "%*s %s %d", name, &size);
                 create(name, size);
                 break;
             case 'D':
+                sscanf(line, "%*s %s", name);
                 delete(name);
                 break;
             case 'R':
+                sscanf(line, "%*s %s %d", name, &blockNum);
                 myRead(name, blockNum, buf);
                 break;
             case 'W':
+                sscanf(line, "%*s %s %d %s", name, &blockNum, buf);
                 myWrite(name, blockNum, buf);
                 break;
             case 'L':
